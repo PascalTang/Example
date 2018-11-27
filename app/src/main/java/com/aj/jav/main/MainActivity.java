@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewModelFactory = Injection.provideViewModelFactory(this);
         MainListViewModel ViewModel = ViewModelProviders.of(this, mViewModelFactory).get(MainListViewModel.class);
 
-        fragment1 = MainFragment.newInstance(20001, 0, "0", "最新" ,position);
+        fragment1 = MainFragment.newInstance(Constant.DISPLAY_TYPE_LONG_2, 0, "0", "最新" ,position);
 //        fragment2 = MainFragment.newInstance(20001, 1, "0", "排行" , position);
 
         MainListPresenter mMainListPresenter = new MainListPresenter(ViewModel ,fragment1);

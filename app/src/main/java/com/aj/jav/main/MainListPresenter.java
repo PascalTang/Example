@@ -2,8 +2,7 @@ package com.aj.jav.main;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
-
+import com.aj.jav.constant.ApiConstant;
 import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
 import com.aj.jav.data_model.AdGson;
@@ -15,31 +14,23 @@ import com.aj.jav.room.ui.MainListViewModel;
 import com.aj.jav.service.ApiService;
 import com.aj.jav.utils.ValueUtility;
 import com.google.gson.Gson;
-
-import org.reactivestreams.Subscriber;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public class MainListPresenter implements MainListContract.Presenter {
     private CompositeDisposable mCompositeDisposable;
     private final MainListContract.View mView;
     private final MainListViewModel mMainListViewModel;
-    private int mCurrentPage = 1;
+    private int mCurrentPage = 0;
     private int mTotalPages = -1;
     private static final int ITEM_COUNT_OF_PAGE = 24; //一次顯示多少項目
-    private int mAdPosition;
+    private int mAdPosition , mScrollPosition;
     private String mToken, mMenuId, mMenuTitle, mVideoType, mOrder, mTop;
     private List<Map<String, Object>> mDataList = new ArrayList<>();
 
@@ -66,12 +57,13 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public void init(int adPosition, String menuId, String menuTitle, int itemType) {
+    public void init(int adPosition, String menuId, String menuTitle, int itemType, int lastScrollPosition) {
         this.mToken = "eyJ1c2VyX2lkIjoxNzMwODg3OSwibGFzdGxvZ2luIjoxNTM3MTEyOTY3fQ.8d4bd7f9d373d40a526641b9dac7cc47.a049471dcb12125fb18cfcf7e9599fadd90546f365ce57752faf84bb";
         this.mAdPosition = adPosition;
         this.mMenuId = menuId;
         this.mMenuTitle = menuTitle;
-        this.mVideoType = (itemType == Constant.DISPLAY_TYPE_SHORT_2) ? "short" : "long";
+        this.mVideoType = (itemType == Constant.DISPLAY_TYPE_SHORT_2) ? ApiConstant.TYPE_SHORT : ApiConstant.TYPE_LONG;
+        this.mScrollPosition = lastScrollPosition;
 
         if (mMenuTitle.equals("最新")) {
             this.mOrder = "time";
@@ -81,12 +73,17 @@ public class MainListPresenter implements MainListContract.Presenter {
         }
     }
 
+    @Override
+    public void firstTimeLoadVideoListApi() {
+        mCurrentPage = 0;
+        loadVideoListApi();
+    }
 
     /**
      * API 4.1 Get Video List by Menu
      */
     public void loadVideoListApi() {
-
+        mCurrentPage ++;
         //中間可以多放一個viewmodel
         //presenter
         ApiService service = ApiClient.getRetrofit().create(ApiService.class);
@@ -126,6 +123,11 @@ public class MainListPresenter implements MainListContract.Presenter {
                         }
                     }
                 });
+    }
+
+    @Override
+    public boolean isHaveMoreData() {
+        return mCurrentPage < mTotalPages || mTotalPages == -1;
     }
 
     private void stopProgress(){
@@ -253,6 +255,16 @@ public class MainListPresenter implements MainListContract.Presenter {
 //        Repository repo = repositories.get(position);
 //        view.setStarCount(repo.getStarsCount());
 //        view.setTitle(repo.getTitle());
+    }
+
+    @Override
+    public List<Map<String, Object>> getMainList() {
+        return mDataList;
+    }
+
+    @Override
+    public int getType() {
+        return mVideoType.equals(ApiConstant.TYPE_LONG) ? Constant.DISPLAY_TYPE_LONG_1 : Constant.DISPLAY_TYPE_SHORT_2;
     }
 
     @Override
