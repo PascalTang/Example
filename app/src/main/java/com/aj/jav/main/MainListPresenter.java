@@ -229,32 +229,17 @@ public class MainListPresenter implements MainListContract.Presenter {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private final List<Repository> repositories;
-
     @Override
     public int getRepositoriesRowsCount() {
-        return mMainListViewModel.getSize();
-//        return repositories.size();
+//        return mMainListViewModel.getSize();
+        return mDataList.size();
     }
 
     @Override
     public void onBindRepositoryRowViewAtPosition(MainListContract.RepositoryRowView view, int position) {
-//        Repository repo = repositories.get(position);
-//        view.setStarCount(repo.getStarsCount());
-//        view.setTitle(repo.getTitle());
+        Repository repo = mDataList.get(position).get();
+        view.setStarCount(repo.getStarsCount());
+        view.setTitle(repo.getTitle());
     }
 
     @Override
