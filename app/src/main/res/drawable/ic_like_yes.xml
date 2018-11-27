@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="90dp"
+    android:height="90dp"
+    android:viewportHeight="90"
+    android:viewportWidth="90">
+
+    <path
+        android:name="backgroundrect"
+        android:pathData="M0,0 L100,0 L100,100 L0,100 L0,0 Z"
+        android:strokeWidth="1" />
+    <path
+        android:name="svg_1"
+        android:fillColor="#D0021B"
+        android:fillType="evenOdd"
+        android:pathData="M44,0 C68.3005,0,88,19.6995,88,44 C88,68.3005,68.3005,88,44,88
+C19.6995,88,0,68.3005,0,44 C0,19.6995,19.6995,0,44,0 Z"
+        android:strokeWidth="1" />
+    <path
+        android:name="bounds"
+        android:fillType="evenOdd"
+        android:pathData="M21.5333,21.5333 L68.4667,21.5333 L68.4667,68.4667 L21.5333,68.4667
+L21.5333,21.5333 Z"
+        android:strokeWidth="1" />
+    <path
+        android:name="Shape"
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M45,37.1778 C43.6898,33.7908,40.0192,31.3111,36.2,31.3111
+C31.227,31.3111,27.4,35.0892,27.4,40.1111 C27.4,47.0123,34.8174,52.349,45,62.6
+C55.1826,52.349,62.6,47.0123,62.6,40.1111
+C62.6,35.0892,58.773,31.3111,53.8,31.3111
+C49.9769,31.3111,46.3102,33.7908,45,37.1778 Z"
+        android:strokeWidth="1" />
+</vector>

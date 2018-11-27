@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Jav</string>
+
+    <!--load more-->
+    <string name="load_more">資料抓取中請稍候&#8230;</string>
+
+    <!--贊助商-->
+    <string name="ad_wording">品牌赞助</string>
+
+    <!--標籤-->
+    <string name="film_tag_no_mark">无</string>
+    <string name="film_tag_chinese">中</string>
+
+    <!--影片播放頁-->
+    <string name="video_play_no_more">再擼就要出血啦～沒有更多惹</string>
+
+</resources>
