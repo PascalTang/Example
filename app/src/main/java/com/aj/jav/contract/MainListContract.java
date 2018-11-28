@@ -15,7 +15,6 @@ public interface MainListContract {
         void showTopProgress(boolean show);
         void toast(String msg);
         void showOops(boolean show);
-
         void updateRecycleView();
         void updateRecycleView(int positionStart, int itemCount);
         void scrollToPosition(int position);
@@ -23,27 +22,16 @@ public interface MainListContract {
 
     interface Presenter extends BasePresenter {
         void insertList(MainListGson gson);
-
-//        void loadVideoList();
-
         void init(int adPosition , String menuId, String menuTitle , int itemType , int lastScrollPosition);
-
-        void firstTimeLoadVideoListApi();
-
+        void firstLoadVideoListApi();
         void loadVideoListApi();
-
+        void reloadVideoListApi();
         boolean isHaveMoreData();
-
         int getDataCount();
-
         void onBindVideoHolderViewAtPosition(VideoHolderView holder , int position);
-
         List<Map<String,Object>> getMainList();
-
         int getType();
-
         void likeVideo(String id , boolean like , int position);
-
         void clcikItem();
     }
 

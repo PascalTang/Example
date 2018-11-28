@@ -1,6 +1,7 @@
 package com.aj.jav.main;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,8 @@ import com.aj.jav.room.ui.ViewModelFactory;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewModelFactory mViewModelFactory;
 
-    private MainFragment fragment1;
+    private MainFragment mFragment1;
+    private Fragment mFragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +26,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewModelFactory = Injection.provideViewModelFactory(this);
         MainListViewModel ViewModel = ViewModelProviders.of(this, mViewModelFactory).get(MainListViewModel.class);
 
-        fragment1 = MainFragment.newInstance(Constant.DISPLAY_TYPE_LONG_2, 0, "0", "最新" ,position);
-//        fragment2 = MainFragment.newInstance(20001, 1, "0", "排行" , position);
+        mFragment1 = MainFragment.newInstance(Constant.DISPLAY_TYPE_LONG_2, 0, "0", "最新" ,position);
+        mFragment2 = new Fragment();
 
-        MainListPresenter mMainListPresenter = new MainListPresenter(ViewModel ,fragment1);
+        MainListPresenter mMainListPresenter = new MainListPresenter(ViewModel , mFragment1);
 
         findViewById(R.id.btn1).setOnClickListener(this);
         findViewById(R.id.btn2).setOnClickListener(this);
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId()){
             case R.id.btn1:
-            case R.id.btn2:
 
                 Bundle args = new Bundle();
                 args.putInt("ad_position", 0);
@@ -52,10 +53,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 args.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.DISPLAY_TYPE_LONG_2);
                 args.putInt("scroll", position);
 
-                fragment1.setArguments(args);
+                mFragment1.setArguments(args);
 
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment1, "f2")
+                        .replace(R.id.container, mFragment1, "f1")
+                        .commit();
+                break;
+
+            case R.id.btn2:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, mFragment2, "f2")
                         //.addToBackStack("fname")
                         .commit();
                 break;

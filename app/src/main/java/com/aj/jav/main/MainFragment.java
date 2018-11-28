@@ -90,7 +90,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mMainListPresenter.firstTimeLoadVideoListApi();
+                mMainListPresenter.reloadVideoListApi();
             }
         });
     }
@@ -101,7 +101,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
 
         setRecyclerView(getRecyclerViewAdapter(), getSpanCount());
 
-        mMainListPresenter.firstTimeLoadVideoListApi();
+        mMainListPresenter.firstLoadVideoListApi();
     }
 
     protected void setRecyclerView(final RecyclerView.Adapter adapter, int spanCount) {
@@ -124,14 +124,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
 
     protected RecyclerView.Adapter getRecyclerViewAdapter() {
         return new MainRecyclerAdapter(getActivity(), mMainListPresenter);
-    }
-
-    public int getType() {
-        return mMainListPresenter.getType();
-    }
-
-    protected List<Map<String, Object>> getDataList() {
-        return mMainListPresenter.getMainList();
     }
 
     protected int getSpanCount() {
@@ -228,7 +220,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
 
     @Override
     public void scrollToPosition(int position) {
-        mRecyclerView.scrollToPosition(mScrollPosition);
+        mRecyclerView.scrollToPosition(position);
     }
 
     @Override

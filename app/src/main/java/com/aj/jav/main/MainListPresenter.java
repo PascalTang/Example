@@ -38,6 +38,7 @@ public class MainListPresenter implements MainListContract.Presenter {
     private int mAdPosition, mScrollPosition, mItemType;
     private String mToken, mMenuId, mMenuTitle, mVideoType, mOrder, mTop;
     private List<Map<String, Object>> mDataList = new ArrayList<>();
+    private boolean mIsFirstTimeLoadData = true;
 
     public MainListPresenter(@NonNull MainListViewModel mainListViewModel,
                              @NonNull MainListContract.View view) {
@@ -80,8 +81,18 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public void firstTimeLoadVideoListApi() {
+    public void firstLoadVideoListApi() {
+        if (mIsFirstTimeLoadData){
+            mIsFirstTimeLoadData = false;
+            loadVideoListApi();
+        }
+    }
+
+    @Override
+    public void reloadVideoListApi() {
         mCurrentPage = 0;
+        mScrollPosition = 0;
+        Log.i("ddd","reloadVideoListApi "+mScrollPosition);
         loadVideoListApi();
     }
 
@@ -90,8 +101,6 @@ public class MainListPresenter implements MainListContract.Presenter {
      */
     public void loadVideoListApi() {
         mCurrentPage++;
-        //中間可以多放一個viewmodel
-        //presenter
         ApiService service = ApiClient.getRetrofit().create(ApiService.class);
 
         service.getVideoList(mMenuId, mToken, mVideoType, mCurrentPage, mOrder, mTop)
