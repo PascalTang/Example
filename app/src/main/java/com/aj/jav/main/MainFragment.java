@@ -1,6 +1,5 @@
 package com.aj.jav.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,28 +7,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.aj.jav.R;
-import com.aj.jav.constant.ApiConstant;
 import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
-import com.aj.jav.data_model.AdGson;
-import com.aj.jav.data_model.MainListGson;
 import com.aj.jav.layoutmanager.MyGridLayoutManager;
-import com.aj.jav.observer.MyObserver;
 import com.aj.jav.recycle_adapter.MainRecyclerAdapter;
-import com.aj.jav.retrofit.ApiClient;
-import com.aj.jav.service.ApiService;
-import com.aj.jav.utils.ValueUtility;
 import com.aj.jav.utils.ViewUtility;
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +32,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
     private static final String PARAM_MENU_ID = "menu_id";
     private static final String PARAM_MENU_TITLE = "menu_title";
     private static final String PARAM_SCROLL_POSITION = "scroll";
-    private String mMenuId;
-    private String mMenuTitle;
     private int mScrollPosition;
     private ImageView mOopsIV;
 
@@ -73,8 +59,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mMenuId = getArguments().getString(PARAM_MENU_ID);
-            mMenuTitle = getArguments().getString(PARAM_MENU_TITLE);
             mScrollPosition = getArguments().getInt(PARAM_SCROLL_POSITION);
 
             mMainListPresenter.init(getArguments().getInt(PARAM_POSITION),
@@ -139,7 +123,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
     }
 
     protected RecyclerView.Adapter getRecyclerViewAdapter() {
-        return new MainRecyclerAdapter(getActivity(), getDataList(), getType(), mMainListPresenter);
+        return new MainRecyclerAdapter(getActivity(), mMainListPresenter);
     }
 
     public int getType() {

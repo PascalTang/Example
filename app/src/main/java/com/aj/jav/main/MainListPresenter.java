@@ -2,6 +2,8 @@ package com.aj.jav.main;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.aj.jav.R;
 import com.aj.jav.constant.ApiConstant;
 import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
@@ -12,12 +14,15 @@ import com.aj.jav.retrofit.ApiClient;
 import com.aj.jav.room.dao.MainListEntity;
 import com.aj.jav.room.ui.MainListViewModel;
 import com.aj.jav.service.ApiService;
+import com.aj.jav.service.BaseDomain;
 import com.aj.jav.utils.ValueUtility;
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -30,7 +35,7 @@ public class MainListPresenter implements MainListContract.Presenter {
     private int mCurrentPage = 0;
     private int mTotalPages = -1;
     private static final int ITEM_COUNT_OF_PAGE = 24; //一次顯示多少項目
-    private int mAdPosition , mScrollPosition;
+    private int mAdPosition, mScrollPosition, mItemType;
     private String mToken, mMenuId, mMenuTitle, mVideoType, mOrder, mTop;
     private List<Map<String, Object>> mDataList = new ArrayList<>();
 
@@ -62,6 +67,7 @@ public class MainListPresenter implements MainListContract.Presenter {
         this.mAdPosition = adPosition;
         this.mMenuId = menuId;
         this.mMenuTitle = menuTitle;
+        this.mItemType = itemType;
         this.mVideoType = (itemType == Constant.DISPLAY_TYPE_SHORT_2) ? ApiConstant.TYPE_SHORT : ApiConstant.TYPE_LONG;
         this.mScrollPosition = lastScrollPosition;
 
@@ -83,7 +89,7 @@ public class MainListPresenter implements MainListContract.Presenter {
      * API 4.1 Get Video List by Menu
      */
     public void loadVideoListApi() {
-        mCurrentPage ++;
+        mCurrentPage++;
         //中間可以多放一個viewmodel
         //presenter
         ApiService service = ApiClient.getRetrofit().create(ApiService.class);
@@ -130,12 +136,12 @@ public class MainListPresenter implements MainListContract.Presenter {
         return mCurrentPage < mTotalPages || mTotalPages == -1;
     }
 
-    private void stopProgress(){
+    private void stopProgress() {
         mView.showProgress(false);
         mView.showTopProgress(false);
     }
 
-    private void loadComplete(MainListGson gson){
+    private void loadComplete(MainListGson gson) {
         insertList(gson);
 
         stopProgress();
@@ -152,11 +158,9 @@ public class MainListPresenter implements MainListContract.Presenter {
             mView.scrollToPosition(mScrollPosition);
 
         } else {
-            //todo 確認itemCount
             final int itemCount = mDataList.size();
             setListData(gson);
             mView.updateRecycleView(itemCount, mDataList.size());
-
         }
     }
 
@@ -228,33 +232,108 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private final List<Repository> repositories;
-
     @Override
-    public int getRepositoriesRowsCount() {
-        return mMainListViewModel.getSize();
-//        return repositories.size();
+    public int getDataCount() {
+//        return mMainListViewModel.getSize();
+        return mDataList.size();
     }
 
     @Override
-    public void onBindRepositoryRowViewAtPosition(MainListContract.RepositoryRowView view, int position) {
-//        Repository repo = repositories.get(position);
-//        view.setStarCount(repo.getStarsCount());
-//        view.setTitle(repo.getTitle());
+    public void onBindVideoHolderViewAtPosition(MainListContract.VideoHolderView view, int position) {
+        view.setTitle((String) mDataList.get(position).get("title"));
+        view.setActor((String) mDataList.get(position).get("actor"));
+        view.setImage(BaseDomain.sBaseImageDomain + mDataList.get(position).get("cover_url"), BaseDomain.sBaseImageReferer, getImagePlaceHolderId());
+        view.setTime(getTime(position));
+
+        String mainTag = getMainTag(position);
+        view.setMainTag(!mainTag.isEmpty(), transparentString(mainTag) , getMainTagBG(mainTag));
+
+
+        view.setSecTag(isTagChinese(position) , isTagNoMark(position));
+        view.setLike((String) mDataList.get(position).get("id"), (boolean) mDataList.get(position).get("like"), position);
+    }
+
+    private int getImagePlaceHolderId() {
+        switch (mItemType) {
+            case Constant.DISPLAY_TYPE_LONG_2:
+                return R.drawable.ic_image_default_straight;
+            case Constant.DISPLAY_TYPE_LONG_1:
+            case Constant.DISPLAY_TYPE_SHORT_2:
+                return R.drawable.ic_image_default_horizontal;
+            default:
+                return 0;
+        }
+    }
+
+    private String getTime(int position) {
+        switch (mItemType) {
+            case Constant.DISPLAY_TYPE_LONG_1:
+            case Constant.DISPLAY_TYPE_LONG_2:
+                return (ValueUtility.getDate((long) mDataList.get(position).get("date")));
+            case Constant.DISPLAY_TYPE_SHORT_2:
+                return (ValueUtility.getTime(String.valueOf((int) mDataList.get(position).get("duration"))));
+            default:
+                return "";
+        }
+    }
+
+    private String getMainTag(int position){
+        return  (String) mDataList.get(position).get("main_tag");
+    }
+
+    private int getMainTagBG(String tag){
+        switch (tag){
+            case "限免":
+                return R.drawable.bg_gradient_main_tag_orange;
+            case "獨家":
+                return R.drawable.bg_gradient_main_tag_red;
+            default:
+                return 0;
+        }
+    }
+
+    private String transparentString(String s) {
+        if (!ValueUtility.isCN()) return s;
+        switch (s) {
+            case "獨家":
+                return "独家";
+            default:
+                return s;
+        }
+    }
+
+    private boolean isTagChinese(int position){
+        return isTagShow(position , "中");
+    }
+
+    private boolean isTagNoMark(int position){
+        return isTagShow(position , "無");
+    }
+
+    private boolean isTagShow(int position , String tag){
+        switch (getSecTagSize(position)){
+            case 1:
+                return getSecTag(position).equals(tag);
+            case 2:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private int getSecTagSize(int position){
+        List<String> secondTags = getSecTags(position);
+        if (secondTags == null)return 0;
+        return secondTags.size();
+    }
+
+    private String getSecTag(int position){
+        List<String> secondTags = getSecTags(position);
+        return secondTags.get(0);
+    }
+
+    private List<String> getSecTags(int position){
+        return (List<String>) mDataList.get(position).get("second_tag");
     }
 
     @Override
@@ -265,6 +344,40 @@ public class MainListPresenter implements MainListContract.Presenter {
     @Override
     public int getType() {
         return mVideoType.equals(ApiConstant.TYPE_LONG) ? Constant.DISPLAY_TYPE_LONG_1 : Constant.DISPLAY_TYPE_SHORT_2;
+    }
+
+    @Override
+    public void likeVideo(String id , boolean like , int position) {
+
+    }
+
+    @Override
+    public void clcikItem() {
+//        if (mContext instanceof FilmActivity){
+//            ((FilmActivity) mContext).finish();
+//        }
+//        Bundle bundle = new Bundle();
+//        bundle.putString("video_id", id);
+//        bundle.putBoolean("like", like);
+//        bundle.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, mFilmType);
+//        ViewUtility.gotoNextActivity(mContext, FilmActivity.class, bundle);
+//
+//        setGA(id);
+    }
+
+    /**
+     * @param id 影片id
+     */
+    private void setGA(String id) {
+        switch (mItemType) {
+            case Constant.DISPLAY_TYPE_LONG_1:
+            case Constant.DISPLAY_TYPE_LONG_2:
+//                GaHelper.getInstance().setTrackEvents("LongFilmListPage.action", "GoToLongFilmPlayPage", id);
+                break;
+            case Constant.DISPLAY_TYPE_SHORT_2:
+//                GaHelper.getInstance().setTrackEvents("ShortFilmListPage.action", "GoToShortFilmPlayPage", id);
+                break;
+        }
     }
 
     @Override
