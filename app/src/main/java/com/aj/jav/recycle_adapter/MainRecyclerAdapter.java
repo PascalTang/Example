@@ -56,8 +56,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST:
                 return new VideoHolder(mContext,
-                        LayoutInflater.from(parent.getContext()).inflate(getVideoListItemLayout(), parent, false) ,
-                        mFilmType);
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate(getVideoListItemLayout(), parent, false));
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE:
                 return new BaseHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_no_more, parent, false));
@@ -108,10 +108,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST:
                 VideoHolder videoHolder = (VideoHolder) holder;
-                mPresenter.onBindRepositoryRowViewAtPosition(videoHolder , position);
-
-                VideoHolder videoHolder = (VideoHolder) holder;
-                videoHolder.onBindViewHolder(videoHolder , position , mDataList);
+                mPresenter.onBindVideoHolderViewAtPosition(videoHolder , position);
                 break;
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE:
@@ -127,7 +124,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-//        return mPresenter.getRepositoriesRowsCount();
+//        return mPresenter.getDataCount();
         return mDataList == null || mDataList.size() == 0 ? 0 : mDataList.size();
     }
 }

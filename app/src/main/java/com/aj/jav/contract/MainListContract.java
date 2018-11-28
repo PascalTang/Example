@@ -1,5 +1,7 @@
 package com.aj.jav.contract;
 
+import android.widget.ImageView;
+
 import com.aj.jav.base.BasePresenter;
 import com.aj.jav.base.BaseView;
 import com.aj.jav.data_model.MainListGson;
@@ -32,19 +34,26 @@ public interface MainListContract {
 
         boolean isHaveMoreData();
 
-        int getRepositoriesRowsCount();
+        int getDataCount();
 
-        void onBindRepositoryRowViewAtPosition(RepositoryRowView holder , int position);
+        void onBindVideoHolderViewAtPosition(VideoHolderView holder , int position);
 
         List<Map<String,Object>> getMainList();
 
         int getType();
+
+        void likeVideo(String id , boolean like , int position);
+
+        void clcikItem();
     }
 
-    interface RepositoryRowView {
-
+    interface VideoHolderView {
         void setTitle(String title);
-
-        void setStarCount(int starCount);
+        void setActor(String actor);
+        void setTime(String time);
+        void setImage(String url, String referer, int placeHolder);
+        void setMainTag(boolean show , String text , int drawableId);
+        void setSecTag(boolean isChinese , boolean isNoMark);
+        void setLike(String id , boolean like , int position);
     }
 }
