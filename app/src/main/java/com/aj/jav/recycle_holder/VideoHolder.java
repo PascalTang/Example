@@ -1,29 +1,24 @@
 package com.aj.jav.recycle_holder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.aj.jav.R;
-import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
+import com.aj.jav.film.FilmActivity;
 import com.aj.jav.helper.GlideHelper;
-import com.aj.jav.service.BaseDomain;
-import com.aj.jav.utils.ValueUtility;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by pascal on 2018/3/27.
  * 長片1欄/2欄/短片2欄 的VideoHolder
  */
 
-public class VideoHolder extends RecyclerView.ViewHolder implements MainListContract.VideoHolderView, View.OnClickListener {
+public class VideoHolder extends RecyclerView.ViewHolder implements MainListContract.VideoHolderView{
 
     private MainListContract.Presenter mPresenter;
     private Context mContext;
@@ -49,8 +44,6 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
         this.textSecondTag1 = itemView.findViewById(R.id.text_second_tag_1);
         this.textSecondTag2 = itemView.findViewById(R.id.text_second_tag_2);
         this.toggleLike = itemView.findViewById(R.id.toggle_like);
-
-        this.itemView.setOnClickListener(this);
     }
 
     @Override
@@ -100,7 +93,15 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
     }
 
     @Override
-    public void onClick(View view) {
-        mPresenter.clcikItem();
+    public void setItemClick(String videoId) {
+        this.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.setGA(videoId);
+
+                Intent it = new Intent(mContext , FilmActivity.class);
+                mContext.startActivity(it);
+            }
+        });
     }
 }

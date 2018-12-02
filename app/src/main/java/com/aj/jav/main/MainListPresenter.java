@@ -253,6 +253,7 @@ public class MainListPresenter implements MainListContract.Presenter {
         view.setActor((String) mDataList.get(position).get("actor"));
         view.setImage(BaseDomain.sBaseImageDomain + mDataList.get(position).get("cover_url"), BaseDomain.sBaseImageReferer, getImagePlaceHolderId());
         view.setTime(getTime(position));
+        view.setItemClick((String) mDataList.get(position).get("id"));
 
         String mainTag = getMainTag(position);
         view.setMainTag(!mainTag.isEmpty(), transparentString(mainTag) , getMainTagBG(mainTag));
@@ -360,24 +361,10 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     }
 
-    @Override
-    public void clcikItem() {
-//        if (mContext instanceof FilmActivity){
-//            ((FilmActivity) mContext).finish();
-//        }
-//        Bundle bundle = new Bundle();
-//        bundle.putString("video_id", id);
-//        bundle.putBoolean("like", like);
-//        bundle.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, mFilmType);
-//        ViewUtility.gotoNextActivity(mContext, FilmActivity.class, bundle);
-//
-//        setGA(id);
-    }
-
     /**
      * @param id 影片id
      */
-    private void setGA(String id) {
+    public void setGA(String id) {
         switch (mItemType) {
             case Constant.DISPLAY_TYPE_LONG_1:
             case Constant.DISPLAY_TYPE_LONG_2:

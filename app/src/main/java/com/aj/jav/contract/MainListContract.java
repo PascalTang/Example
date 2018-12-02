@@ -32,7 +32,7 @@ public interface MainListContract {
         List<Map<String,Object>> getMainList();
         int getType();
         void likeVideo(String id , boolean like , int position);
-        void clcikItem();
+        void setGA(String id);
     }
 
     interface VideoHolderView {
@@ -43,5 +43,6 @@ public interface MainListContract {
         void setMainTag(boolean show , String text , int drawableId);
         void setSecTag(boolean isChinese , boolean isNoMark);
         void setLike(String id , boolean like , int position);
+        void setItemClick(String id);
     }
 }
