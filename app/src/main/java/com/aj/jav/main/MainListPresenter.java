@@ -92,14 +92,39 @@ public class MainListPresenter implements MainListContract.Presenter {
     public void reloadVideoListApi() {
         mCurrentPage = 0;
         mScrollPosition = 0;
-        Log.i("ddd","reloadVideoListApi "+mScrollPosition);
         loadVideoListApi();
+    }
+
+    /**
+     * Progress show的時候 會擋到原畫面 所以要把它捲到最下面
+     */
+    public void checkDataAndLoadVideoListApi() {
+        if (isHaveMoreData()){
+            mView.showProgress(true);
+            mView.scrollToPosition((mDataList.size() - 1));
+            loadVideoListApi();
+        }else
+            showNoMore();
+    }
+
+    private boolean isHaveMoreData() {
+        return mCurrentPage < mTotalPages || mTotalPages == -1;
+    }
+
+    private void showNoMore() {
+        if (mDataList == null || mDataList.size() == 0 || (int) mDataList.get(mDataList.size() - 1).get(Constant.FILM_RECYCLE_ITEM_TYPE) == Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE)
+            return;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE);
+        mDataList.add(map);
+        mView.updateRecycleView(mDataList.size() - 1);
     }
 
     /**
      * API 4.1 Get Video List by Menu
      */
-    public void loadVideoListApi() {
+    private void loadVideoListApi() {
         mCurrentPage++;
         ApiService service = ApiClient.getRetrofit().create(ApiService.class);
 
@@ -140,11 +165,6 @@ public class MainListPresenter implements MainListContract.Presenter {
                 });
     }
 
-    @Override
-    public boolean isHaveMoreData() {
-        return mCurrentPage < mTotalPages || mTotalPages == -1;
-    }
-
     private void stopProgress() {
         mView.showProgress(false);
         mView.showTopProgress(false);
@@ -169,7 +189,7 @@ public class MainListPresenter implements MainListContract.Presenter {
         } else {
             final int itemCount = mDataList.size();
             setListData(gson);
-            mView.updateRecycleView(itemCount, mDataList.size());
+            mView.insertRecycleViewItem(itemCount, mDataList.size());
         }
     }
 

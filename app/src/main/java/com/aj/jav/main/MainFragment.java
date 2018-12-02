@@ -32,7 +32,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
     private static final String PARAM_MENU_ID = "menu_id";
     private static final String PARAM_MENU_TITLE = "menu_title";
     private static final String PARAM_SCROLL_POSITION = "scroll";
-    private int mScrollPosition;
     private ImageView mOopsIV;
 
     private List<Map<String, Object>> mDataList = new ArrayList<>();
@@ -59,7 +58,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mScrollPosition = getArguments().getInt(PARAM_SCROLL_POSITION);
 
             mMainListPresenter.init(getArguments().getInt(PARAM_POSITION),
                     getArguments().getString(PARAM_MENU_ID),
@@ -100,7 +98,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
         super.onActivityCreated(savedInstanceState);
 
         setRecyclerView(getRecyclerViewAdapter(), getSpanCount());
-
         mMainListPresenter.firstLoadVideoListApi();
     }
 
@@ -136,39 +133,10 @@ public class MainFragment extends Fragment implements MainListContract.View {
             super.onScrollStateChanged(recyclerView, newState);
 
             if (!recyclerView.canScrollVertically(1) && mProgress.getVisibility() == View.GONE) {
-                if (mMainListPresenter.isHaveMoreData()) {
-                    mMainListPresenter.loadVideoListApi();
-                    showProgress(true);
-                    scrollToBottom();
-                } else {
-                    showNoMore();
-                }
+                mMainListPresenter.checkDataAndLoadVideoListApi();
             }
         }
     };
-
-    public void showNoMore() {
-        if (mDataList == null || mDataList.size() == 0 || (int) mDataList.get(mDataList.size() - 1).get(Constant.FILM_RECYCLE_ITEM_TYPE) == Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE)
-            return;
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE);
-        mDataList.add(map);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.getAdapter().notifyItemChanged(mDataList.size() - 1);
-            }
-        });
-    }
-
-    /**
-     * Progress show的時候 會擋到原畫面 所以要把它捲到最下面
-     */
-    private void scrollToBottom() {
-        if (mRecyclerView != null && mDataList.size() > 0)
-            mRecyclerView.scrollToPosition(mDataList.size() - 1);
-    }
 
 //    private void gotoNextPage(Class<?> className) {
 //        Intent intent = new Intent();
@@ -213,7 +181,13 @@ public class MainFragment extends Fragment implements MainListContract.View {
     }
 
     @Override
-    public void updateRecycleView(int positionStart, int itemCount) {
+    public void updateRecycleView(int position) {
+        if (mRecyclerView.getAdapter() != null)
+            mRecyclerView.getAdapter().notifyItemChanged(position);
+    }
+
+    @Override
+    public void insertRecycleViewItem(int positionStart, int itemCount) {
         if (mRecyclerView.getAdapter() != null)
             mRecyclerView.getAdapter().notifyItemRangeInserted(itemCount, mDataList.size());
     }
@@ -227,6 +201,8 @@ public class MainFragment extends Fragment implements MainListContract.View {
     public void onDestroyView() {
         super.onDestroyView();
         LinearLayoutManager myLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        //todo 如果是null會?
+        assert myLayoutManager != null;
         int scrollPosition = myLayoutManager.findFirstVisibleItemPosition();
 
         MainActivity activity = (MainActivity) getActivity();
