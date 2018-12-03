@@ -55,6 +55,11 @@ public class MainListRepository implements MainListDataSource {
     }
 
     @Override
+    public void updateLike(String id, boolean like) {
+        mMainListDao.updateLike(id , like);
+    }
+
+    @Override
     public Flowable<List<MainListEntity>> getMainList() {
         return mMainListDao.getMainList();
     }

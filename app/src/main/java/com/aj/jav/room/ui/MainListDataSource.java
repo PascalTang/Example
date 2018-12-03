@@ -36,5 +36,7 @@ public interface MainListDataSource {
 
     Single<Boolean> getVideoLike(String id);
 
+    void updateLike(String id , boolean like);
+
     Flowable<List<MainListEntity>> getMainList();
 }

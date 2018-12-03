@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -75,6 +76,12 @@ public class MainListViewModel extends ViewModel {
                 mDataSource.deleteTable();
                 e.onNext(0);
             }
+        });
+    }
+
+    public Completable updateLike(String videoId , boolean like) {
+        return Completable.fromAction(() -> {
+            mDataSource.updateLike(videoId,like);
         });
     }
 }

@@ -3,6 +3,7 @@ package com.aj.jav.recycle_holder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import com.aj.jav.helper.GlideHelper;
  * 長片1欄/2欄/短片2欄 的VideoHolder
  */
 
-public class VideoHolder extends RecyclerView.ViewHolder implements MainListContract.VideoHolderView{
+public class VideoHolder extends RecyclerView.ViewHolder implements MainListContract.VideoHolderView, View.OnClickListener {
 
     private MainListContract.Presenter mPresenter;
     private Context mContext;
@@ -44,6 +45,7 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
         this.textSecondTag1 = itemView.findViewById(R.id.text_second_tag_1);
         this.textSecondTag2 = itemView.findViewById(R.id.text_second_tag_2);
         this.toggleLike = itemView.findViewById(R.id.toggle_like);
+        this.itemView.setOnClickListener(this);
     }
 
     @Override
@@ -77,8 +79,8 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
 
     @Override
     public void setSecTag(boolean isChinese, boolean isNoMark) {
-        textSecondTag1.setVisibility(isChinese?View.VISIBLE:View.INVISIBLE);
-        textSecondTag2.setVisibility(isNoMark?View.VISIBLE:View.INVISIBLE);
+        textSecondTag1.setVisibility(isChinese ? View.VISIBLE : View.INVISIBLE);
+        textSecondTag2.setVisibility(isNoMark ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -93,15 +95,17 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
     }
 
     @Override
-    public void setItemClick(String videoId) {
-        this.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.setGA(videoId);
+    public void onClick(View view) {
+        Log.i("ddd","onClick");
+        int position = getAdapterPosition();
+        mPresenter.onItemInteraction(position);
+        gotoFilmPage(position);
+    }
 
-                Intent it = new Intent(mContext , FilmActivity.class);
-                mContext.startActivity(it);
-            }
-        });
+    private void gotoFilmPage(int position) {
+        Log.i("ddd","gotoFilmPage");
+        Intent intent = new Intent(mContext, FilmActivity.class);
+        intent.putExtras(mPresenter.getFilmPageBundle(position));
+        mContext.startActivity(intent);
     }
 }

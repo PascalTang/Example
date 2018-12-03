@@ -1,5 +1,7 @@
 package com.aj.jav.main;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,6 +11,7 @@ import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
 import com.aj.jav.data_model.AdGson;
 import com.aj.jav.data_model.MainListGson;
+import com.aj.jav.film.FilmActivity;
 import com.aj.jav.observer.MyObserver;
 import com.aj.jav.retrofit.ApiClient;
 import com.aj.jav.room.dao.MainListEntity;
@@ -202,7 +205,7 @@ public class MainListPresenter implements MainListContract.Presenter {
         Map<String, Object> map = new HashMap<>();
 
         map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD);
-        if (mVideoType.equals("long")) {
+        if (mVideoType.equals(ApiConstant.TYPE_LONG)) {
             map.put("img", adGson.getResponse().getLongX().get(mAdPosition).getAd_img_url());
             map.put("title", adGson.getResponse().getLongX().get(mAdPosition).getAd_title());
             map.put("link", adGson.getResponse().getLongX().get(mAdPosition).getAd_link_url());
@@ -273,7 +276,6 @@ public class MainListPresenter implements MainListContract.Presenter {
         view.setActor((String) mDataList.get(position).get("actor"));
         view.setImage(BaseDomain.sBaseImageDomain + mDataList.get(position).get("cover_url"), BaseDomain.sBaseImageReferer, getImagePlaceHolderId());
         view.setTime(getTime(position));
-        view.setItemClick((String) mDataList.get(position).get("id"));
 
         String mainTag = getMainTag(position);
         view.setMainTag(!mainTag.isEmpty(), transparentString(mainTag) , getMainTagBG(mainTag));
@@ -281,6 +283,11 @@ public class MainListPresenter implements MainListContract.Presenter {
 
         view.setSecTag(isTagChinese(position) , isTagNoMark(position));
         view.setLike((String) mDataList.get(position).get("id"), (boolean) mDataList.get(position).get("like"), position);
+    }
+
+    @Override
+    public void onItemInteraction(int adapterPosition) {
+        setGA((String) mDataList.get(adapterPosition).get("id"));
     }
 
     private int getImagePlaceHolderId() {
@@ -394,6 +401,14 @@ public class MainListPresenter implements MainListContract.Presenter {
 //                GaHelper.getInstance().setTrackEvents("ShortFilmListPage.action", "GoToShortFilmPlayPage", id);
                 break;
         }
+    }
+
+    @Override
+    public Bundle getFilmPageBundle(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putString("video_id", (String) mDataList.get(position).get("id"));
+        bundle.putString("video_type", mVideoType);
+        return bundle;
     }
 
     @Override

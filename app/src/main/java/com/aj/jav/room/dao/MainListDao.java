@@ -30,6 +30,9 @@ public interface MainListDao {
     @Query("SELECT `like` FROM MAIN_LIST WHERE id = :id ")
     Single<Boolean> getVideoLike(String id);
 
+    @Query("UPDATE MAIN_LIST SET `like` = :like WHERE id = :id")
+    void updateLike(String id , boolean like);
+
 //    @Query("SELECT * FROM MAIN_LIST WHERE `like` = 1")
 //    Flowable<List<MainListEntity>> getMainList();
 

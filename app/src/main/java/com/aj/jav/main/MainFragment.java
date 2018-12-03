@@ -138,18 +138,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
         }
     };
 
-//    private void gotoNextPage(Class<?> className) {
-//        Intent intent = new Intent();
-//        Bundle bundle = new Bundle();
-//
-//        bundle.putString("filter_title", mMenuTitle);
-//        bundle.putString("menu_id", mMenuId);
-//        bundle.putString("video_type", mType);
-//        intent.setClass(getActivity(), className);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
-//    }
-
     @Override
     public void showProgress(boolean b) {
         if (getActivity() == null || getActivity().isDestroyed() || getActivity().isFinishing() || mProgress == null)

@@ -1,5 +1,7 @@
 package com.aj.jav.contract;
 
+import android.os.Bundle;
+
 import com.aj.jav.base.BasePresenter;
 import com.aj.jav.base.BaseView;
 import com.aj.jav.data_model.MainListGson;
@@ -27,10 +29,11 @@ public interface MainListContract {
         void reloadVideoListApi();
         int getDataCount();
         void onBindVideoHolderViewAtPosition(VideoHolderView holder , int position);
+        void onItemInteraction(int adapterPosition);
         List<Map<String,Object>> getMainList();
         int getType();
         void likeVideo(String id , boolean like , int position);
-        void setGA(String id);
+        Bundle getFilmPageBundle(int position);
     }
 
     interface VideoHolderView {
@@ -41,6 +44,5 @@ public interface MainListContract {
         void setMainTag(boolean show , String text , int drawableId);
         void setSecTag(boolean isChinese , boolean isNoMark);
         void setLike(String id , boolean like , int position);
-        void setItemClick(String id);
     }
 }
