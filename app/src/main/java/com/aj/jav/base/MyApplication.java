@@ -1,23 +1,22 @@
 package com.aj.jav.base;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
-
+import com.aj.jav.BuildConfig;
 import com.aj.jav.helper.SharedPreferenceHelper;
 import com.aj.jav.utils.EncodeUtility;
-import com.facebook.stetho.BuildConfig;
 import com.facebook.stetho.Stetho;
 
 /**
  * Created by pascal on 2018/12/04.
  */
 
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends Application {
     private static MyApplication mApplication;
     @Override
     public void onCreate() {
@@ -34,6 +33,12 @@ public class MyApplication extends MultiDexApplication {
         } else {
             decompile();
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+//        initMultiDex();
     }
 
     public static MyApplication getInstance() {
@@ -71,7 +76,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
     public void checkAppOwn() {
-        String md5 = EncodeUtility.base64Decode("N2NmOTFjYTFhNWUyOWVkYmNjNWIwMzNkYTM0NzFhNDE=");
+        String md5 = EncodeUtility.base64Decode("aa6ee30a4b68ba15a2bf783df17353e8");
 
         if (!getSingInfo(getPackageName()).equals(md5)) {
             android.os.Process.killProcess(android.os.Process.myPid());
