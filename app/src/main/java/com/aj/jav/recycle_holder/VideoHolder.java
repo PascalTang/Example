@@ -66,7 +66,6 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
     @Override
     public void setImage(String url, String referer, int placeHolder) {
         GlideHelper.setImage(mContext, url, referer, placeHolder, imageCover);
-
     }
 
     @Override

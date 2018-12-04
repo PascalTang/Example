@@ -13,6 +13,4 @@ public interface ApiService {
 
     @GET("v1/videos/menu/{menu_id}")
     Observable<Response<String>> getVideoList(@Path("menu_id") String menu_id, @Query("token") String token, @Query("video_type") String video_type, @Query("page") int page, @Query("order") String order, @Query("top") String top);
-
-
 }

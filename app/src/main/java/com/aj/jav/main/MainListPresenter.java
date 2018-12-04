@@ -1,17 +1,15 @@
 package com.aj.jav.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.aj.jav.R;
 import com.aj.jav.constant.ApiConstant;
 import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
 import com.aj.jav.data_model.AdGson;
 import com.aj.jav.data_model.MainListGson;
-import com.aj.jav.film.FilmActivity;
+import com.aj.jav.helper.SharedPreferenceHelper;
 import com.aj.jav.observer.MyObserver;
 import com.aj.jav.retrofit.ApiClient;
 import com.aj.jav.room.dao.MainListEntity;
@@ -67,7 +65,7 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     @Override
     public void init(int adPosition, String menuId, String menuTitle, int itemType, int lastScrollPosition) {
-        this.mToken = "eyJ1c2VyX2lkIjoxNzMwODg3OSwibGFzdGxvZ2luIjoxNTM3MTEyOTY3fQ.8d4bd7f9d373d40a526641b9dac7cc47.a049471dcb12125fb18cfcf7e9599fadd90546f365ce57752faf84bb";
+        this.mToken = SharedPreferenceHelper.getToken();
         this.mAdPosition = adPosition;
         this.mMenuId = menuId;
         this.mMenuTitle = menuTitle;

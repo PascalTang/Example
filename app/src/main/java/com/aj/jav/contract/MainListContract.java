@@ -29,12 +29,12 @@ public interface MainListContract {
         void reloadVideoListApi();
         int getDataCount();
         void onBindVideoHolderViewAtPosition(VideoHolderView view , int position);
-        void onVideoHolderOnclcik(MainListContract.VideoHolderView view, int position);
+        void onVideoHolderOnclcik(VideoHolderView view, int position);
         List<Map<String,Object>> getMainList();
         int getItemViewType(int position);
         void likeVideo(String id , boolean like , int position);
         void onBindAdHolderViewAtPosition(AdHolderView view, int position);
-        void onAdHolderOnclcik(MainListContract.AdHolderView view, int position);
+        void onAdHolderOnclcik(AdHolderView view, int position);
     }
 
     interface VideoHolderView {
