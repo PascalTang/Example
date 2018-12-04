@@ -29,11 +29,10 @@ public interface MainListContract {
         void reloadVideoListApi();
         int getDataCount();
         void onBindVideoHolderViewAtPosition(VideoHolderView holder , int position);
-        void onItemInteraction(int adapterPosition);
+        void onItemInteraction(MainListContract.VideoHolderView view, int position);
         List<Map<String,Object>> getMainList();
         int getType();
         void likeVideo(String id , boolean like , int position);
-        Bundle getFilmPageBundle(int position);
     }
 
     interface VideoHolderView {
@@ -44,5 +43,6 @@ public interface MainListContract {
         void setMainTag(boolean show , String text , int drawableId);
         void setSecTag(boolean isChinese , boolean isNoMark);
         void setLike(String id , boolean like , int position);
+        void gotoFilmPage(Bundle bundle);
     }
 }

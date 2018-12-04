@@ -286,8 +286,17 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public void onItemInteraction(int adapterPosition) {
-        setGA((String) mDataList.get(adapterPosition).get("id"));
+    public void onItemInteraction(MainListContract.VideoHolderView view, int position) {
+        String videoId = (String) mDataList.get(position).get("id");
+        setGA(videoId);
+        view.gotoFilmPage(getFilmPageBundle(videoId));
+    }
+
+    private Bundle getFilmPageBundle(String videoId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("video_id", videoId);
+        bundle.putString("video_type", mVideoType);
+        return bundle;
     }
 
     private int getImagePlaceHolderId() {
@@ -401,14 +410,6 @@ public class MainListPresenter implements MainListContract.Presenter {
 //                GaHelper.getInstance().setTrackEvents("ShortFilmListPage.action", "GoToShortFilmPlayPage", id);
                 break;
         }
-    }
-
-    @Override
-    public Bundle getFilmPageBundle(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putString("video_id", (String) mDataList.get(position).get("id"));
-        bundle.putString("video_type", mVideoType);
-        return bundle;
     }
 
     @Override

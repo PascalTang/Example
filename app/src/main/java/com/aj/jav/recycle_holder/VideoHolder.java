@@ -2,6 +2,7 @@ package com.aj.jav.recycle_holder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -96,16 +97,15 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
 
     @Override
     public void onClick(View view) {
-        Log.i("ddd","onClick");
         int position = getAdapterPosition();
-        mPresenter.onItemInteraction(position);
-        gotoFilmPage(position);
+        mPresenter.onItemInteraction(this , position);
     }
 
-    private void gotoFilmPage(int position) {
-        Log.i("ddd","gotoFilmPage");
+    @Override
+    public void gotoFilmPage(Bundle bundle) {
         Intent intent = new Intent(mContext, FilmActivity.class);
-        intent.putExtras(mPresenter.getFilmPageBundle(position));
+        if (bundle != null)
+            intent.putExtras(bundle);
         mContext.startActivity(intent);
     }
 }
