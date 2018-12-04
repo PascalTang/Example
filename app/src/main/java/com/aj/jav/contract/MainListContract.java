@@ -28,11 +28,13 @@ public interface MainListContract {
         void checkDataAndLoadVideoListApi();
         void reloadVideoListApi();
         int getDataCount();
-        void onBindVideoHolderViewAtPosition(VideoHolderView holder , int position);
-        void onItemInteraction(MainListContract.VideoHolderView view, int position);
+        void onBindVideoHolderViewAtPosition(VideoHolderView view , int position);
+        void onVideoHolderOnclcik(MainListContract.VideoHolderView view, int position);
         List<Map<String,Object>> getMainList();
-        int getType();
+        int getItemViewType(int position);
         void likeVideo(String id , boolean like , int position);
+        void onBindAdHolderViewAtPosition(AdHolderView view, int position);
+        void onAdHolderOnclcik(MainListContract.AdHolderView view, int position);
     }
 
     interface VideoHolderView {
@@ -44,5 +46,11 @@ public interface MainListContract {
         void setSecTag(boolean isChinese , boolean isNoMark);
         void setLike(String id , boolean like , int position);
         void gotoFilmPage(Bundle bundle);
+    }
+    
+    interface AdHolderView {
+        void setTitle(String title);
+        void setImage(String url);
+        void gotoBrowser(String url);
     }
 }

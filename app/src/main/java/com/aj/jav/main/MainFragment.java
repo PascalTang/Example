@@ -34,7 +34,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
     private static final String PARAM_SCROLL_POSITION = "scroll";
     private ImageView mOopsIV;
 
-    private List<Map<String, Object>> mDataList = new ArrayList<>();
     private View mProgress;
     private MainListContract.Presenter mMainListPresenter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -50,7 +49,6 @@ public class MainFragment extends Fragment implements MainListContract.View {
         args.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, type);
         args.putInt(PARAM_SCROLL_POSITION, srcollPosition);
         fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -108,7 +106,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
             @Override
             public int getSpanSize(int position) {
                 int type = adapter.getItemViewType(position);
-                if (type == Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE || mMainListPresenter.getType() == Constant.DISPLAY_TYPE_LONG_1) {
+                if (type == Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE || type == Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1 || type == Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG) {
                     return 2;
                 } else return 1;
             }
@@ -177,7 +175,7 @@ public class MainFragment extends Fragment implements MainListContract.View {
     @Override
     public void insertRecycleViewItem(int positionStart, int itemCount) {
         if (mRecyclerView.getAdapter() != null)
-            mRecyclerView.getAdapter().notifyItemRangeInserted(itemCount, mDataList.size());
+            mRecyclerView.getAdapter().notifyItemRangeInserted(itemCount, mMainListPresenter.getMainList().size());
     }
 
     @Override

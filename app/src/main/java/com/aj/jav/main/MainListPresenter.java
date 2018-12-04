@@ -32,7 +32,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainListPresenter implements MainListContract.Presenter {
-    private CompositeDisposable mCompositeDisposable;
+    private final CompositeDisposable mCompositeDisposable;
     private final MainListContract.View mView;
     private final MainListViewModel mMainListViewModel;
     private int mCurrentPage = 0;
@@ -72,7 +72,7 @@ public class MainListPresenter implements MainListContract.Presenter {
         this.mMenuId = menuId;
         this.mMenuTitle = menuTitle;
         this.mItemType = itemType;
-        this.mVideoType = (itemType == Constant.DISPLAY_TYPE_SHORT_2) ? ApiConstant.TYPE_SHORT : ApiConstant.TYPE_LONG;
+        this.mVideoType = (itemType == Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2) ? ApiConstant.TYPE_SHORT : ApiConstant.TYPE_LONG;
         this.mScrollPosition = lastScrollPosition;
 
         if (mMenuTitle.equals("最新")) {
@@ -204,15 +204,17 @@ public class MainListPresenter implements MainListContract.Presenter {
 
         Map<String, Object> map = new HashMap<>();
 
-        map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD);
+        //fixme 用item type?
         if (mVideoType.equals(ApiConstant.TYPE_LONG)) {
             map.put("img", adGson.getResponse().getLongX().get(mAdPosition).getAd_img_url());
             map.put("title", adGson.getResponse().getLongX().get(mAdPosition).getAd_title());
             map.put("link", adGson.getResponse().getLongX().get(mAdPosition).getAd_link_url());
+            map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG);
         } else {
             map.put("img", adGson.getResponse().getShortX().get(mAdPosition).getAd_img_url());
             map.put("title", adGson.getResponse().getShortX().get(mAdPosition).getAd_title());
             map.put("link", adGson.getResponse().getShortX().get(mAdPosition).getAd_link_url());
+            map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD_SHORT);
         }
 
         mDataList.add(map);
@@ -226,7 +228,7 @@ public class MainListPresenter implements MainListContract.Presenter {
 
                 Map<String, Object> map = new HashMap<>();
 
-                map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST);
+                map.put(Constant.FILM_RECYCLE_ITEM_TYPE, mItemType);
                 map.put("id", gson.getResponse().getVideos().get(i).getVideo_id());
                 map.put("title", gson.getResponse().getVideos().get(i).getVideo_title());
                 map.put("actor", gson.getResponse().getVideos().get(i).getActor());
@@ -280,13 +282,12 @@ public class MainListPresenter implements MainListContract.Presenter {
         String mainTag = getMainTag(position);
         view.setMainTag(!mainTag.isEmpty(), transparentString(mainTag) , getMainTagBG(mainTag));
 
-
         view.setSecTag(isTagChinese(position) , isTagNoMark(position));
         view.setLike((String) mDataList.get(position).get("id"), (boolean) mDataList.get(position).get("like"), position);
     }
 
     @Override
-    public void onItemInteraction(MainListContract.VideoHolderView view, int position) {
+    public void onVideoHolderOnclcik(MainListContract.VideoHolderView view, int position) {
         String videoId = (String) mDataList.get(position).get("id");
         setGA(videoId);
         view.gotoFilmPage(getFilmPageBundle(videoId));
@@ -301,10 +302,10 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     private int getImagePlaceHolderId() {
         switch (mItemType) {
-            case Constant.DISPLAY_TYPE_LONG_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
                 return R.drawable.ic_image_default_straight;
-            case Constant.DISPLAY_TYPE_LONG_1:
-            case Constant.DISPLAY_TYPE_SHORT_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
                 return R.drawable.ic_image_default_horizontal;
             default:
                 return 0;
@@ -313,10 +314,10 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     private String getTime(int position) {
         switch (mItemType) {
-            case Constant.DISPLAY_TYPE_LONG_1:
-            case Constant.DISPLAY_TYPE_LONG_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
                 return (ValueUtility.getDate((long) mDataList.get(position).get("date")));
-            case Constant.DISPLAY_TYPE_SHORT_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
                 return (ValueUtility.getTime(String.valueOf((int) mDataList.get(position).get("duration"))));
             default:
                 return "";
@@ -388,8 +389,8 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public int getType() {
-        return mVideoType.equals(ApiConstant.TYPE_LONG) ? Constant.DISPLAY_TYPE_LONG_1 : Constant.DISPLAY_TYPE_SHORT_2;
+    public int getItemViewType(int position) {
+        return (int) mDataList.get(position).get(Constant.FILM_RECYCLE_ITEM_TYPE);
     }
 
     @Override
@@ -397,16 +398,33 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     }
 
+    @Override
+    public void onBindAdHolderViewAtPosition(MainListContract.AdHolderView view, int position) {
+        view.setTitle((String) mDataList.get(position).get("title"));
+        view.setImage((String) mDataList.get(position).get("img"));
+
+    }
+
+    @Override
+    public void onAdHolderOnclcik(MainListContract.AdHolderView view, int position) {
+        String url = (String) mDataList.get(position).get("link");
+        if (url.toLowerCase().equals("vip")) {
+            //todo to somepage
+//                    mContext.startActivity(new Intent(mContext, BuyMemberActivity.class));
+        }else
+            view.gotoBrowser(url);
+    }
+
     /**
      * @param id 影片id
      */
     public void setGA(String id) {
         switch (mItemType) {
-            case Constant.DISPLAY_TYPE_LONG_1:
-            case Constant.DISPLAY_TYPE_LONG_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
 //                GaHelper.getInstance().setTrackEvents("LongFilmListPage.action", "GoToLongFilmPlayPage", id);
                 break;
-            case Constant.DISPLAY_TYPE_SHORT_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
 //                GaHelper.getInstance().setTrackEvents("ShortFilmListPage.action", "GoToShortFilmPlayPage", id);
                 break;
         }

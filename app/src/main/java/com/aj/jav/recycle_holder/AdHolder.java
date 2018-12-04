@@ -9,45 +9,47 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aj.jav.R;
+import com.aj.jav.contract.MainListContract;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import java.util.List;
-import java.util.Map;
 
-public class AdHolder extends RecyclerView.ViewHolder {
+public class AdHolder extends RecyclerView.ViewHolder implements MainListContract.AdHolderView, View.OnClickListener {
 
+    private MainListContract.Presenter mPresenter;
     private Context mContext;
-
-    private TextView textTitle;
+    private TextView mTextTitleTV;
     private ImageView mGifImageView;
 
-    public AdHolder(Context context, View itemView) {
+    public AdHolder(Context context, MainListContract.Presenter presenter, View itemView) {
         super(itemView);
-        mContext = context;
-
-        textTitle = itemView.findViewById(R.id.text_title);
-        mGifImageView = itemView.findViewById(R.id.gif_iv);
+        this.mContext = context;
+        this.mPresenter = presenter;
+        this.mTextTitleTV = itemView.findViewById(R.id.title_tv);
+        this.mGifImageView = itemView.findViewById(R.id.gif_iv);
+        this.itemView.setOnClickListener(this);
     }
 
-    public void onBindViewHolder(AdHolder videoHolder, final int position, final List<Map<String, Object>> dataList) {
-        videoHolder.textTitle.setText((String) dataList.get(position).get("title"));
+    @Override
+    public void setTitle(String title) {
+        mTextTitleTV.setText(title);
 
-        Glide.with(mContext).load(dataList.get(0).get("img")).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(mGifImageView);
+    }
 
-        videoHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String link = (String) dataList.get(position).get("link");
-                if (link.toLowerCase().equals("vip")){
-                    //todo to somepage
-//                    mContext.startActivity(new Intent(mContext, BuyMemberActivity.class));
-                }else {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                    mContext.startActivity(browserIntent);
-                }
+    @Override
+    public void setImage(String url) {
+        Glide.with(mContext).load(url).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(mGifImageView);
 
-            }
-        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        mPresenter.onAdHolderOnclcik(this, getAdapterPosition());
+    }
+
+    @Override
+    public void gotoBrowser(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        mContext.startActivity(browserIntent);
     }
 }

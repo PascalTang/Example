@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.aj.jav.R;
 import com.aj.jav.constant.Constant;
+import com.aj.jav.contract.MainListContract;
 import com.aj.jav.room.Injection;
 import com.aj.jav.room.ui.MainListViewModel;
 import com.aj.jav.room.ui.ViewModelFactory;
@@ -26,10 +27,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewModelFactory = Injection.provideViewModelFactory(this);
         MainListViewModel ViewModel = ViewModelProviders.of(this, mViewModelFactory).get(MainListViewModel.class);
 
-        mFragment1 = MainFragment.newInstance(Constant.DISPLAY_TYPE_LONG_2, 0, "0", "最新" ,position);
+        mFragment1 = MainFragment.newInstance(Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1, 0, "0", "最新" ,position);
         mFragment2 = new Fragment();
 
-        MainListPresenter mMainListPresenter = new MainListPresenter(ViewModel , mFragment1);
+        MainListContract.Presenter mMainListPresenter = new MainListPresenter(ViewModel , mFragment1);
 
         findViewById(R.id.btn1).setOnClickListener(this);
         findViewById(R.id.btn2).setOnClickListener(this);
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 args.putInt("ad_position", 0);
                 args.putString("menu_id", "0");
                 args.putString("menu_title", "最新");
-                args.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.DISPLAY_TYPE_LONG_2);
+                args.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1);
                 args.putInt("scroll", position);
 
                 mFragment1.setArguments(args);

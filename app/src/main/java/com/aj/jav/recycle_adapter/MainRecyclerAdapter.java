@@ -25,8 +25,6 @@ import java.util.Map;
 public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Map<String, Object>> mDataList;
-    private int mFilmType;
     private MainListContract.Presenter mPresenter;
 
     /**
@@ -35,8 +33,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     public MainRecyclerAdapter(Context context, MainListContract.Presenter presenter) {
         this.mContext = context;
-        this.mDataList = presenter.getMainList();
-        this.mFilmType = presenter.getType();
         this.mPresenter = presenter;
     }
 
@@ -50,14 +46,30 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case Constant.FILM_RECYCLE_ITEM_TYPE_AD:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG:
                 return new AdHolder(mContext,
-                        LayoutInflater.from(parent.getContext()).inflate(getAdLayout(), parent, false));
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ad_long, parent, false));
 
-            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_AD_SHORT:
+                return new AdHolder(mContext,
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ad_short, parent, false));
+
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
                 return new VideoHolder(mContext,
                         mPresenter,
-                        LayoutInflater.from(parent.getContext()).inflate(getVideoListItemLayout(), parent, false));
+                        LayoutInflater.from(parent.getContext()).inflate( R.layout.item_film_long, parent, false));
+
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
+                return new VideoHolder(mContext,
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate( R.layout.item_film_long2, parent, false));
+
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
+                return new VideoHolder(mContext,
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate( R.layout.item_film_short, parent, false));
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_NO_MORE:
                 return new BaseHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_no_more, parent, false));
@@ -67,47 +79,21 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    private int getVideoListItemLayout(){
-        int itemLayoutId;
-        switch (mFilmType) {
-            case Constant.DISPLAY_TYPE_LONG_1:
-                itemLayoutId = R.layout.item_film_long;
-                break;
-            case Constant.DISPLAY_TYPE_SHORT_2:
-                itemLayoutId = R.layout.item_film_short;
-                break;
-            case Constant.DISPLAY_TYPE_LONG_2:
-                itemLayoutId = R.layout.item_film_long2;
-                break;
-            default:
-                itemLayoutId = R.layout.item_film_short;
-                break;
-        }
-        return itemLayoutId;
-    }
-
-    private int getAdLayout(){
-        switch (mFilmType) {
-            case Constant.DISPLAY_TYPE_LONG_1:
-                return R.layout.item_ad_long;
-            case Constant.DISPLAY_TYPE_SHORT_2:
-                return R.layout.item_ad_short;
-        }
-        return 0;
-    }
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int listType = getItemViewType(position);
 
         switch (listType) {
-            case Constant.FILM_RECYCLE_ITEM_TYPE_AD:
-                AdHolder adHolder = (AdHolder) holder;
-                adHolder.onBindViewHolder(adHolder , position, mDataList);
+            case Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_AD_SHORT:
+                MainListContract.AdHolderView adHolder = (AdHolder) holder;
+                mPresenter.onBindAdHolderViewAtPosition(adHolder , position);
                 break;
 
-            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST:
-                VideoHolder videoHolder = (VideoHolder) holder;
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
+            case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
+                MainListContract.VideoHolderView videoHolder = (VideoHolder) holder;
                 mPresenter.onBindVideoHolderViewAtPosition(videoHolder , position);
                 break;
 
@@ -118,14 +104,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        if (position > mDataList.size() -1) return 0;
-        return (int) mDataList.get(position).get(Constant.FILM_RECYCLE_ITEM_TYPE);
+        return mPresenter.getItemViewType(position);
     }
 
     @Override
     public int getItemCount() {
-//        return mPresenter.getDataCount();
-        return mDataList == null || mDataList.size() == 0 ? 0 : mDataList.size();
+        return mPresenter.getDataCount();
     }
 }
 

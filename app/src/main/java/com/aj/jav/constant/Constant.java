@@ -15,11 +15,13 @@ public class Constant {
      * 2 = 螢幕切左右
      */
     public static final String FILM_RECYCLE_ITEM_TYPE = "FILM_RECYCLE_ITEM_TYPE";
-    public static final int DISPLAY_TYPE_LONG_1 = 20000;
-    public static final int DISPLAY_TYPE_LONG_2 = 20001;
-    public static final int DISPLAY_TYPE_SHORT_2 = 20002;
 
-    public static final int FILM_RECYCLE_ITEM_TYPE_AD = 30001;
-    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LIST = 30002;
-    public static final int FILM_RECYCLE_ITEM_TYPE_NO_MORE = 30003;
+    public static final int FILM_RECYCLE_ITEM_TYPE_AD_LONG = 30001;
+    public static final int FILM_RECYCLE_ITEM_TYPE_AD_SHORT = 30002;
+
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1 = 30003;
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2 = 30004;
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2 = 30005;
+
+    public static final int FILM_RECYCLE_ITEM_TYPE_NO_MORE = 30006;
 }

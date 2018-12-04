@@ -18,7 +18,7 @@
         android:layout_height="250dp" />
 
     <TextView
-        android:id="@+id/text_title"
+        android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -30,7 +30,6 @@
 
     <TextView
         android:text="@string/ad_wording"
-        android:id="@+id/text_actor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
