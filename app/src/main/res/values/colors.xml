@@ -8,4 +8,11 @@
 
     <color name="item_second_tag_bg_blue">#1875ec</color>
     <color name="item_second_tag_bg_purple">#9013fe</color>
+
+    <color name="bottom_navigation_selected">#f42d47</color>
+    <color name="bottom_navigation_normal">#303030</color>
+
+    <color name="top_tab_indicator">#e85151</color>
+    <color name="top_tab_text_selected">#e85151</color>
+    <color name="top_tab_text_normal">#D9000000</color>
 </resources>

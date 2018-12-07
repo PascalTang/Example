@@ -2,20 +2,20 @@
     <string name="app_name">Jav</string>
 
     <!--主頁的Footer-->
-    <string name="bottom_tab_title_long">AV</string>
-    <string name="bottom_tab_title_short">视频</string>
-    <string name="bottom_tab_title_category">分类</string>
+    <string name="bottom_tab_title_long">長片</string>
+    <string name="bottom_tab_title_short">短片</string>
+    <string name="bottom_tab_title_category">分類</string>
     <string name="bottom_tab_title_favorite">收藏</string>
-    <string name="bottom_tab_title_me">我的</string>
+    <string name="bottom_tab_title_me">會員</string>
 
     <!--load more-->
     <string name="load_more">資料抓取中請稍候&#8230;</string>
 
     <!--贊助商-->
-    <string name="ad_wording">品牌赞助</string>
+    <string name="ad_wording">品牌贊助</string>
 
     <!--標籤-->
-    <string name="film_tag_no_mark">无</string>
+    <string name="film_tag_no_mark">無</string>
     <string name="film_tag_chinese">中</string>
 
     <!--影片播放頁-->

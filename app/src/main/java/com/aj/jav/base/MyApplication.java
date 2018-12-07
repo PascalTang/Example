@@ -7,6 +7,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
+
 import com.aj.jav.BuildConfig;
 import com.aj.jav.helper.SharedPreferenceHelper;
 import com.aj.jav.utils.EncodeUtility;
@@ -14,9 +16,10 @@ import com.facebook.stetho.Stetho;
 
 /**
  * Created by pascal on 2018/12/04.
+ * 4.4需要MultiDexApplication
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
     private static MyApplication mApplication;
     @Override
     public void onCreate() {
@@ -24,7 +27,6 @@ public class MyApplication extends Application {
 
         mApplication = this;
 
-        initMultiDex();
 //        BGASwipeBackHelper.init(this, null);
 
         if (BuildConfig.DEBUG) {
@@ -47,10 +49,6 @@ public class MyApplication extends Application {
 
     public static Context getAppContext() {
         return MyApplication.getInstance();
-    }
-
-    private void initMultiDex(){
-        MultiDex.install(getApplicationContext());
     }
 
     private void initStetho(){

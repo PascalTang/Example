@@ -18,16 +18,12 @@ import com.aj.jav.contract.MainListContract;
 import com.aj.jav.layoutmanager.MyGridLayoutManager;
 import com.aj.jav.recycle_adapter.MainRecyclerAdapter;
 import com.aj.jav.utils.ViewUtility;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by chris on 2017/10/13.
  * 長片 短片區的分類頁
  */
-public class MainFragment extends Fragment implements MainListContract.View {
+public class VideoListFragment extends Fragment implements MainListContract.View {
     private static final String PARAM_POSITION = "ad_position";
     private static final String PARAM_MENU_ID = "menu_id";
     private static final String PARAM_MENU_TITLE = "menu_title";
@@ -40,8 +36,8 @@ public class MainFragment extends Fragment implements MainListContract.View {
 
     private RecyclerView mRecyclerView;
 
-    public static MainFragment newInstance(int type, int adPosition, String menuId, String menuTitle, int srcollPosition) {
-        MainFragment fragment = new MainFragment();
+    public static VideoListFragment newInstance(int type, int adPosition, String menuId, String menuTitle, int srcollPosition) {
+        VideoListFragment fragment = new VideoListFragment();
         Bundle args = new Bundle();
         args.putInt(PARAM_POSITION, adPosition);
         args.putString(PARAM_MENU_ID, menuId);
