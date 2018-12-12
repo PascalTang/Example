@@ -1,6 +1,7 @@
 package com.aj.jav.main;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.aj.jav.contract.MainListContract;
 import com.aj.jav.room.Injection;
 import com.aj.jav.room.ui.MainListViewModel;
 import com.aj.jav.room.ui.ViewModelFactory;
+import com.aj.jav.utils.ViewUtility;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ViewModelFactory mViewModelFactory;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private VideoListFragment mFragment1;
     private Fragment mFragment2;
 
+    private View mStatusBar;
     private BottomNavigationView mBottomNavigationView;
 
     @Override
@@ -50,15 +53,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initUI() {
         findViews();
-        initStatusBar();
+        fixStatusBar();
         setBottomNavigationView();
     }
 
     private void findViews() {
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
+        mStatusBar = findViewById(R.id.status_bar_background);
     }
 
-    private void initStatusBar() {
+    private void fixStatusBar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ViewUtility.setStatusBarHeightAndColor(this, mStatusBar, getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
     private void setBottomNavigationView() {
