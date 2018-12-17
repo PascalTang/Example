@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_long"
+        android:id="@+id/navigation_tab0"
         android:icon="@drawable/selector_nav_bottom_long"
-        android:title="@string/bottom_tab_title_long" />
+        android:title="@string/bottom_tab_title_main" />
 
     <item
-        android:id="@+id/navigation_short"
+        android:id="@+id/navigation_tab1"
         android:icon="@drawable/selector_nav_bottom_short"
-        android:title="@string/bottom_tab_title_short" />
+        android:title="@string/bottom_tab_title_search" />
 
     <item
-        android:id="@+id/navigation_category"
+        android:id="@+id/navigation_tab2"
         android:icon="@drawable/selector_nav_bottom_category"
-        android:title="@string/bottom_tab_title_category" />
+        android:title="@string/bottom_tab_title_vip" />
 
     <item
-        android:id="@+id/navigation_favorite"
+        android:id="@+id/navigation_tab3"
         android:icon="@drawable/selector_nav_bottom_favorite"
         android:title="@string/bottom_tab_title_favorite" />
 
     <item
-        android:id="@+id/navigation_me"
+        android:id="@+id/navigation_tab4"
         android:icon="@drawable/selector_nav_bottom_me"
-        android:title="@string/bottom_tab_title_me" />
+        android:title="@string/bottom_tab_title_not_member" />
 
 </menu>

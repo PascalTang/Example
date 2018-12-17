@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.aj.jav.base.BasePresenter;
 import com.aj.jav.base.BaseView;
+import com.aj.jav.data_model.AdGson;
 import com.aj.jav.data_model.MainListGson;
 
 import java.util.List;
@@ -23,18 +24,20 @@ public interface MainListContract {
 
     interface Presenter extends BasePresenter {
         void insertList(MainListGson gson);
-        void init(int adPosition , String menuId, String menuTitle , int itemType , int lastScrollPosition);
+        void init(String menuId, String menuTitle , int itemType , int lastScrollPosition);
         void firstLoadVideoListApi();
         void checkDataAndLoadVideoListApi();
         void reloadVideoListApi();
         int getDataCount();
         void onBindVideoHolderViewAtPosition(VideoHolderView view , int position);
-        void onVideoHolderOnclcik(VideoHolderView view, int position);
+        void onClcikVideoHolder(VideoHolderView view, int position);
         List<Map<String,Object>> getMainList();
         int getItemViewType(int position);
         void likeVideo(String id , boolean like , int position);
         void onBindAdHolderViewAtPosition(AdHolderView view, int position);
-        void onAdHolderOnclcik(AdHolderView view, int position);
+        void onClcikAdHolder(AdHolderView view, int position);
+        void onBindTagHolderViewAtPosition(TagHolderView view, int position);
+        void onClickTag(TagHolderView view, int position , String tag);
     }
 
     interface VideoHolderView {
@@ -49,8 +52,12 @@ public interface MainListContract {
     }
     
     interface AdHolderView {
-        void setTitle(String title);
-        void setImage(String url);
+        void setAD(List<AdGson.ResponseBean.LongBean> adData);
         void gotoBrowser(String url);
+    }
+
+    interface TagHolderView {
+        void setTag(List<String> tags , int itemPostion);
+        void goToTagPage(Bundle bundle);
     }
 }

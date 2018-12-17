@@ -1,65 +1,72 @@
 package com.aj.jav.main;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.FrameLayout;
 import com.aj.jav.R;
-import com.aj.jav.constant.Constant;
-import com.aj.jav.contract.MainListContract;
-import com.aj.jav.room.Injection;
-import com.aj.jav.room.ui.MainListViewModel;
-import com.aj.jav.room.ui.ViewModelFactory;
 import com.aj.jav.utils.ViewUtility;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private ViewModelFactory mViewModelFactory;
-
-    private VideoListFragment mFragment1;
-    private Fragment mFragment2;
+/**
+ * footer tab用view而不是直接用fragment是因為不用另外處理add/show問題
+ */
+public class MainActivity extends AppCompatActivity{
+    private Fragment mFragment1, mMainFragment;
 
     private View mStatusBar;
     private BottomNavigationView mBottomNavigationView;
+    private FrameLayout mFooterTab0, mFooterTab1, mFooterTab2, mFooterTab3, mFooterTab4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mViewModelFactory = Injection.provideViewModelFactory(this);
-        MainListViewModel ViewModel = ViewModelProviders.of(this, mViewModelFactory).get(MainListViewModel.class);
-
-        mFragment1 = VideoListFragment.newInstance(Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1, 0, "0", "最新" ,position);
-        mFragment2 = new VideoListTabContainerFragment();
-
-        MainListContract.Presenter mMainListPresenter = new MainListPresenter(ViewModel , mFragment1);
-
         initUI();
 
-        findViewById(R.id.btn1).setOnClickListener(this);
-        findViewById(R.id.btn2).setOnClickListener(this);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_tab0, mMainFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_tab1, mFragment1).commitAllowingStateLoss();
+        }
+    }
 
-//        if (savedInstanceState == null) {
-//            getFragmentManager().beginTransaction().add(R.id.container, Fragment1.newInstance(position)).commit();
-//        }
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mBottomNavigationView.setSelectedItemId(savedInstanceState.getInt("bottom_tab"));
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("bottom_tab", mBottomNavigationView.getSelectedItemId());
     }
 
     private void initUI() {
         findViews();
         fixStatusBar();
         setBottomNavigationView();
+
+        mFragment1 = new Fragment();
+        mMainFragment = new TabContainerFragment();
     }
 
     private void findViews() {
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mStatusBar = findViewById(R.id.status_bar_background);
+
+        mFooterTab0 = findViewById(R.id.fl_tab0);
+        mFooterTab1 = findViewById(R.id.fl_tab1);
+        mFooterTab2 = findViewById(R.id.fl_tab2);
+        mFooterTab3 = findViewById(R.id.fl_tab3);
+        mFooterTab4 = findViewById(R.id.fl_tab4);
     }
 
     private void fixStatusBar() {
@@ -70,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setBottomNavigationView() {
         mBottomNavigationView.setOnNavigationItemSelectedListener(mNavigationItemSelectedListener);
-//        mBottomNavigationView.disableShiftMode(bottomNavigationView);
         mBottomNavigationView.setItemIconTintList(null);
     }
 
@@ -79,13 +85,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             try {
-//                hideLastFragment();
-//
-//                sFragmentId = item.getItemId();
-//
-//                String tag = getFragmentTag();
-//                intoPage(getFragment(), tag);
-//                setGaClickEvents(tag);
+                hideAllView();
+                switch (item.getItemId()) {
+                    case R.id.navigation_tab0:
+                        mFooterTab0.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.navigation_tab1:
+                        mFooterTab1.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.navigation_tab2:
+                        mFooterTab2.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.navigation_tab3:
+                        mFooterTab3.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.navigation_tab4:
+                        mFooterTab4.setVisibility(View.VISIBLE);
+                        break;
+                }
+
 
                 return true;
             } catch (Exception e) {
@@ -95,37 +113,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    @Override
-    public void onClick(View view) {
-
-        switch (view.getId()){
-            case R.id.btn1:
-
-                Bundle args = new Bundle();
-                args.putInt("ad_position", 0);
-                args.putString("menu_id", "0");
-                args.putString("menu_title", "最新");
-                args.putInt(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1);
-                args.putInt("scroll", position);
-
-                mFragment1.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, mFragment1, "f1")
-                        .commit();
-                break;
-
-            case R.id.btn2:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, mFragment2, "f2")
-                        //.addToBackStack("fname")
-                        .commit();
-                break;
-        }
-    }
-
-    private int position = 0 ;
-    public void setPosition(int i){
-        position = i;
+    private void hideAllView(){
+        mFooterTab0.setVisibility(View.GONE);
+        mFooterTab1.setVisibility(View.GONE);
+        mFooterTab2.setVisibility(View.GONE);
+        mFooterTab3.setVisibility(View.GONE);
+        mFooterTab4.setVisibility(View.GONE);
     }
 }

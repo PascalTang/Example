@@ -2,11 +2,13 @@
     <string name="app_name">Jav</string>
 
     <!--主頁的Footer-->
-    <string name="bottom_tab_title_long">長片</string>
-    <string name="bottom_tab_title_short">短片</string>
-    <string name="bottom_tab_title_category">分類</string>
+    <string name="bottom_tab_title_main">首頁</string>
+    <string name="bottom_tab_title_search">探索</string>
+    <string name="bottom_tab_title_vip">VIP</string>
     <string name="bottom_tab_title_favorite">收藏</string>
-    <string name="bottom_tab_title_me">會員</string>
+    <string name="bottom_tab_title_not_member">未登入</string>
+    <string name="bottom_tab_title_member">會員</string>
+    <string name="bottom_tab_title_record">紀錄</string>
 
     <!--load more-->
     <string name="load_more">資料抓取中請稍候&#8230;</string>

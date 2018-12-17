@@ -3,40 +3,23 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:orientation="vertical">
 
-    <!--<pl.droidsonroids.gif.GifImageView-->
-        <!--android:id="@+id/gif_iv"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="250dp"-->
-        <!--/>-->
-    
-    <ImageView
-        android:id="@+id/gif_iv"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:layout_height="120dp"/>
 
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/general_gray"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:text="@string/ad_wording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textColor="@color/general_gray"
-        />
+    <android.support.design.widget.TabLayout
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:id="@+id/tab_dots"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        app:tabPaddingStart="8dp"
+        app:tabPaddingEnd="8dp"
+        app:tabBackground="@drawable/selector_ad_tab"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp"/>
 
 </LinearLayout>

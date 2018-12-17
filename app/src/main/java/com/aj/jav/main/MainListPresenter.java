@@ -20,6 +20,7 @@ import com.aj.jav.utils.ValueUtility;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class MainListPresenter implements MainListContract.Presenter {
     private int mCurrentPage = 0;
     private int mTotalPages = -1;
     private static final int ITEM_COUNT_OF_PAGE = 24; //一次顯示多少項目
-    private int mAdPosition, mScrollPosition, mItemType;
+    private int mScrollPosition, mItemType;
     private String mToken, mMenuId, mMenuTitle, mVideoType, mOrder, mTop;
     private List<Map<String, Object>> mDataList = new ArrayList<>();
     private boolean mIsFirstTimeLoadData = true;
@@ -64,9 +65,8 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public void init(int adPosition, String menuId, String menuTitle, int itemType, int lastScrollPosition) {
+    public void init(String menuId, String menuTitle, int itemType, int lastScrollPosition) {
         this.mToken = SharedPreferenceHelper.getToken();
-        this.mAdPosition = adPosition;
         this.mMenuId = menuId;
         this.mMenuTitle = menuTitle;
         this.mItemType = itemType;
@@ -181,6 +181,7 @@ public class MainListPresenter implements MainListContract.Presenter {
             mTotalPages = ValueUtility.getTotalPages(totalResult, ITEM_COUNT_OF_PAGE);
             mDataList.clear();
             setAD();
+            setTag();
             setListData(gson);
             checkOopsShowHide();
 
@@ -204,18 +205,59 @@ public class MainListPresenter implements MainListContract.Presenter {
 
         //fixme 用item type?
         if (mVideoType.equals(ApiConstant.TYPE_LONG)) {
-            map.put("img", adGson.getResponse().getLongX().get(mAdPosition).getAd_img_url());
-            map.put("title", adGson.getResponse().getLongX().get(mAdPosition).getAd_title());
-            map.put("link", adGson.getResponse().getLongX().get(mAdPosition).getAd_link_url());
+            map.put("ad", adGson.getResponse().getLongX());
+
+//            map.put("img", adGson.getResponse().getLongX().get(mAdPosition).getAd_img_url());
+//            map.put("title", adGson.getResponse().getLongX().get(mAdPosition).getAd_title());
+//            map.put("link", adGson.getResponse().getLongX().get(mAdPosition).getAd_link_url());
             map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG);
         } else {
-            map.put("img", adGson.getResponse().getShortX().get(mAdPosition).getAd_img_url());
-            map.put("title", adGson.getResponse().getShortX().get(mAdPosition).getAd_title());
-            map.put("link", adGson.getResponse().getShortX().get(mAdPosition).getAd_link_url());
             map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_AD_SHORT);
         }
 
         mDataList.add(map);
+    }
+
+    @Override
+    public void onBindAdHolderViewAtPosition(MainListContract.AdHolderView view, int position) {
+        view.setAD((List<AdGson.ResponseBean.LongBean>)mDataList.get(position).get("ad"));
+    }
+
+    @Override
+    public void onClcikAdHolder(MainListContract.AdHolderView view, int position) {
+        String url = (String) mDataList.get(position).get("link");
+        if (url != null && url.toLowerCase().equals("vip")) {
+            //todo to somepage
+//                    mContext.startActivity(new Intent(mContext, BuyMemberActivity.class));
+        }else
+            view.gotoBrowser(url);
+    }
+
+
+    private void setTag(){
+        String[] strings = {"熱播","內射","學生","模特","巨乳","正妹","新人","篩選"};
+        List<String> tags = Arrays.asList(strings);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("tags",tags);
+        map.put(Constant.FILM_RECYCLE_ITEM_TYPE, Constant.FILM_RECYCLE_ITEM_TYPE_TAG);
+        mDataList.add(map);
+    }
+
+    @Override
+    public void onBindTagHolderViewAtPosition(MainListContract.TagHolderView view, int position) {
+        view.setTag((List<String>)mDataList.get(position).get("tags") , position);
+    }
+
+    @Override
+    public void onClickTag(MainListContract.TagHolderView view, int position, String tag) {
+        view.goToTagPage(getTagPageBundle(tag));
+    }
+
+    private Bundle getTagPageBundle(String tag) {
+        Bundle bundle = new Bundle();
+        bundle.putString("tag", tag);
+        return bundle;
     }
 
     private void setListData(MainListGson gson) {
@@ -285,7 +327,7 @@ public class MainListPresenter implements MainListContract.Presenter {
     }
 
     @Override
-    public void onVideoHolderOnclcik(MainListContract.VideoHolderView view, int position) {
+    public void onClcikVideoHolder(MainListContract.VideoHolderView view, int position) {
         String videoId = (String) mDataList.get(position).get("id");
         setGA(videoId);
         view.gotoFilmPage(getFilmPageBundle(videoId));
@@ -396,23 +438,6 @@ public class MainListPresenter implements MainListContract.Presenter {
 
     }
 
-    @Override
-    public void onBindAdHolderViewAtPosition(MainListContract.AdHolderView view, int position) {
-        view.setTitle((String) mDataList.get(position).get("title"));
-        view.setImage((String) mDataList.get(position).get("img"));
-
-    }
-
-    @Override
-    public void onAdHolderOnclcik(MainListContract.AdHolderView view, int position) {
-        String url = (String) mDataList.get(position).get("link");
-        if (url.toLowerCase().equals("vip")) {
-            //todo to somepage
-//                    mContext.startActivity(new Intent(mContext, BuyMemberActivity.class));
-        }else
-            view.gotoBrowser(url);
-    }
-
     /**
      * @param id 影片id
      */
@@ -436,7 +461,7 @@ public class MainListPresenter implements MainListContract.Presenter {
                 .subscribe(new Consumer<List<MainListEntity>>() {
                     @Override
                     public void accept(List<MainListEntity> mainListEntities) throws Exception {
-                        Log.i("ddd", "getMainList " + mainListEntities.size());
+//                        Log.i("ddd", "getMainList " + mainListEntities.size());
                     }
                 }));
     }

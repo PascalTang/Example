@@ -8,28 +8,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aj.jav.R;
 
-/**
- * Created by chris on 2017/12/7.
- * 首頁的公用承載頁
- */
+public abstract class BaseTabContainerFragment extends Fragment {
 
-public abstract class BaseHomeContainerFragment extends Fragment {
-    protected static final String TYPE = "type";
-    protected static final String PARAM_SEARCH = "search_result";
-    protected boolean mIsSearchResult;
-
-    protected TabLayout mTabLayout;
-    protected ViewPager mViewPager;
-
-    protected int mTabCounter;
-    protected String[] mTabTitle;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private String[] mTabTitle;
 
     @Override
     public void onAttach(Context context) {
@@ -44,51 +33,36 @@ public abstract class BaseHomeContainerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mIsSearchResult = getArguments().getBoolean(PARAM_SEARCH);
-        }
-//        ViewUtility.setMargins(mTabLayout, 0, ValueUtility.getStatusBarHeight(getActivity()), 0, 0);
     }
+
+    private void initTabData(){
+        mTabTitle = getTab();
+    }
+
+    protected abstract String[] getTab();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate( R.layout.fragment_tab_container, container, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_tab_container, container, false);
         findViews(view, savedInstanceState);
         return view;
     }
 
     private void findViews(View view, Bundle savedInstanceState) {
         mTabLayout = view.findViewById(R.id.tab);
-        mViewPager = view.findViewById(R.id.viewpager);
+        mViewPager = view.findViewById(R.id.view_pager);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setViewPager();
-    }
+        initTabData();
 
-//    @Override
-//    protected void initData() {
-//        mListener.changeStatusBarColor(Constant.RED_STATUS_BAR);
-//    }
-//
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        mListener.changeStatusBarColor(Constant.RED_STATUS_BAR);
-//    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mTabLayout.getTabCount() != 0) return;
-        setTabTitle();
         setTabLayout();
+
+        setViewPager();
     }
 
     protected abstract PagerAdapter getPagerAdapter();
@@ -97,15 +71,11 @@ public abstract class BaseHomeContainerFragment extends Fragment {
      * 設定ViewPager
      */
     private void setViewPager() {
-        if (getPagerAdapter()==null) Log.i("ddd","1");
-        if (mViewPager==null) Log.i("ddd","2");
         mViewPager.setAdapter(getPagerAdapter());
         mViewPager.addOnPageChangeListener(pageChangeListener);
         mViewPager.setCurrentItem(0);
-        mViewPager.setOffscreenPageLimit(5);
+        mViewPager.setOffscreenPageLimit(mTabTitle.length);
     }
-
-    protected abstract void setTabTitle();
 
     /**
      * 設定TabLayout
@@ -115,12 +85,32 @@ public abstract class BaseHomeContainerFragment extends Fragment {
 
         mTabLayout.addOnTabSelectedListener(getTabSelectedListener());
 
-        for (int i = 0; i < mTabCounter; i++) {
+        for (int i = 0; i < mTabTitle.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(mTabTitle[i]));
         }
     }
 
-    protected abstract TabLayout.OnTabSelectedListener getTabSelectedListener();
+    protected TabLayout.OnTabSelectedListener getTabSelectedListener() {
+        return new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (mViewPager != null && tab != null) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        };
+    }
 
     /**
      * ViewPager 滑動時的監聽

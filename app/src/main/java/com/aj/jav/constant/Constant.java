@@ -17,10 +17,11 @@ public class Constant {
     public static final String FILM_RECYCLE_ITEM_TYPE = "FILM_RECYCLE_ITEM_TYPE";
     public static final int FILM_RECYCLE_ITEM_TYPE_AD_LONG = 30001;
     public static final int FILM_RECYCLE_ITEM_TYPE_AD_SHORT = 30002;
-    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1 = 30003;
-    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2 = 30004;
-    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2 = 30005;
-    public static final int FILM_RECYCLE_ITEM_TYPE_NO_MORE = 30006;
+    public static final int FILM_RECYCLE_ITEM_TYPE_TAG= 30003;
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1 = 30005;
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2 = 30006;
+    public static final int FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2 = 30007;
+    public static final int FILM_RECYCLE_ITEM_TYPE_NO_MORE = 30010;
 
     /* 畫質 */
     public static final int CLARITY_240P = 240;

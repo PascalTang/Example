@@ -95,7 +95,7 @@ public class VideoHolder extends RecyclerView.ViewHolder implements MainListCont
 
     @Override
     public void onClick(View view) {
-        mPresenter.onVideoHolderOnclcik(this , getAdapterPosition());
+        mPresenter.onClcikVideoHolder(this , getAdapterPosition());
     }
 
     @Override

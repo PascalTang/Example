@@ -1,12 +1,10 @@
 package com.aj.jav.base;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.aj.jav.BuildConfig;
@@ -35,12 +33,6 @@ public class MyApplication extends MultiDexApplication {
         } else {
             decompile();
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-//        initMultiDex();
     }
 
     public static MyApplication getInstance() {

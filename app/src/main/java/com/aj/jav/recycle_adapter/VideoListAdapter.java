@@ -12,6 +12,7 @@ import com.aj.jav.constant.Constant;
 import com.aj.jav.contract.MainListContract;
 import com.aj.jav.recycle_holder.AdHolder;
 import com.aj.jav.recycle_holder.BaseHolder;
+import com.aj.jav.recycle_holder.TagHolder;
 import com.aj.jav.recycle_holder.VideoHolder;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.Map;
  * 主要的影片列表
  */
 
-public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class VideoListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private MainListContract.Presenter mPresenter;
@@ -31,7 +32,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * @filmCallback 操控fragment ui
      * @filmPresenter 操控網路或邏輯
      */
-    public MainRecyclerAdapter(Context context, MainListContract.Presenter presenter) {
+    public VideoListAdapter(Context context, MainListContract.Presenter presenter) {
         this.mContext = context;
         this.mPresenter = presenter;
     }
@@ -55,6 +56,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 return new AdHolder(mContext,
                         mPresenter,
                         LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ad_short, parent, false));
+
+            case Constant.FILM_RECYCLE_ITEM_TYPE_TAG:
+                return new TagHolder(mContext,
+                        mPresenter,
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tags_container, parent, false));
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
                 return new VideoHolder(mContext,
@@ -86,14 +92,19 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         switch (listType) {
             case Constant.FILM_RECYCLE_ITEM_TYPE_AD_LONG:
             case Constant.FILM_RECYCLE_ITEM_TYPE_AD_SHORT:
-                MainListContract.AdHolderView adHolder = (AdHolder) holder;
+                MainListContract.AdHolderView adHolder = (MainListContract.AdHolderView) holder;
                 mPresenter.onBindAdHolderViewAtPosition(adHolder , position);
+                break;
+
+            case Constant.FILM_RECYCLE_ITEM_TYPE_TAG:
+                MainListContract.TagHolderView tagHolder = (MainListContract.TagHolderView) holder;
+                mPresenter.onBindTagHolderViewAtPosition(tagHolder , position);
                 break;
 
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_1:
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_LONG_2:
             case Constant.FILM_RECYCLE_ITEM_TYPE_VIDEO_SHORT_2:
-                MainListContract.VideoHolderView videoHolder = (VideoHolder) holder;
+                MainListContract.VideoHolderView videoHolder = (MainListContract.VideoHolderView) holder;
                 mPresenter.onBindVideoHolderViewAtPosition(videoHolder , position);
                 break;
 
